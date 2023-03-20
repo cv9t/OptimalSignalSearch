@@ -11,7 +11,7 @@ void TreeUtils::_printTree(std::ostream& os, Node* node, int depth)
 	}
 
 	if (node->isRoot()) {
-		os << "root - *" << std::endl;
+		os << "root - " << *node << std::endl;
 	}
 	else {
 		os << node->getLevel() << " - " << *node << std::endl;

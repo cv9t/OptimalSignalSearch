@@ -8,7 +8,7 @@ class Tree
 {
 private:
 	int _depth;
-	Node* _root = new Node({});
+	Node* _root = new Node({0, 0});
 
 	void _create();
 

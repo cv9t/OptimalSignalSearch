@@ -22,7 +22,7 @@ void Tree::_create()
 
 void Tree::_create(Node* parent, int depth)
 {
-	std::vector<std::vector<int>> values{ { -1, -1 }, { -1, 1 }, { 1, -1 }, { 1, 1 } };
+	std::vector<std::tuple<int, int>> values{ { -1, -1 }, { -1, 1 }, { 1, -1 }, { 1, 1 } };
 
 	for (int i = 0; i < values.size(); i += 1) {
 		Node* child = new Node(values[i], parent);

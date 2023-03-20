@@ -1,14 +1,11 @@
 ﻿#include "Node.h"
 
-Node::Node(const std::vector<int>& value)
+Node::Node(const std::tuple<int, int> value)
 {
-	// TODO:
-	// Сделать проверку на размер value, value.size() == 2
-
 	_value = value;
 }
 
-Node::Node(const std::vector<int>& value, Node* parent) : Node(value)
+Node::Node(const std::tuple<int, int> value, Node* parent) : Node(value)
 {
 	_parent = parent;
 }
@@ -41,7 +38,7 @@ bool Node::isLeaf() const
 	return _children.empty();
 }
 
-std::vector<int> Node::getValue() const
+std::tuple<int, int> Node::getValue() const
 {
 	return _value;
 }
@@ -75,7 +72,7 @@ std::ostream& operator<<(std::ostream& os, Node& node)
 		os << "*";
 	}
 	else {
-		os << node._value[0] << node._value[1];
+		os << std::get<0>(node._value) << std::get<1>(node._value);
 	}
 	return os;
 }

@@ -2,20 +2,21 @@
 #define NODE_H
 
 #include <vector>
+#include <tuple>
 #include <fstream>
 
 class Node
 {
 private:
-	std::vector<int> _value;
+	std::tuple<int, int> _value;
 	std::vector<Node*> _children;
 	Node* _parent;
 
 	int _getLevel(const Node* node, int level) const;
 
 public:
-	Node(const std::vector<int>& value);
-	Node(const std::vector<int>& value, Node* parent);
+	Node(const std::tuple<int, int> value);
+	Node(const std::tuple<int, int> value, Node* parent);
 	~Node();
 
 	int getLevel() const;
@@ -24,7 +25,7 @@ public:
 
 	bool isLeaf() const;
 
-	std::vector<int> getValue() const;
+	std::tuple<int, int> getValue() const;
 
 	std::vector<Node*> getChildren() const;
 

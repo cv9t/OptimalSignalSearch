@@ -3,6 +3,8 @@
 #include <queue>
 #include <algorithm>
 
+int EMPTY = -1;
+
 OptimalSignal::OptimalSignal(int length)
 {
 	// TODO:
@@ -10,6 +12,7 @@ OptimalSignal::OptimalSignal(int length)
 
 	_tree = new Tree(length / 2);
 	_length = length;
+	_mps = EMPTY;
 	_create();
 }
 
@@ -27,38 +30,40 @@ bool OptimalSignal::_isOdd()
 
 void OptimalSignal::_create()
 {
-	std::vector<int> lCode, rCode;
-	_create(_tree->getRoot(), lCode, rCode);
+	_create(_tree->getRoot(), {}, {});
 }
 
-void OptimalSignal::_create(Node* root, std::vector<int>& lCode, std::vector<int>& rCode)
+void OptimalSignal::_create(Node* node, std::vector<int> lCode, std::vector<int> rCode)
 {
-	if (root == nullptr) {
+	if (node == nullptr) {
 		return;
 	}
 
-	if (!root->isRoot()) {
-		int levelDiff = lCode.size() - root->getParent()->getLevel();
+	if (!node->isRoot()) {
+		int levelDiff = lCode.size() - node->getParent()->getLevel();
 		if (levelDiff > 0) {
 			lCode.erase(lCode.end() - levelDiff, lCode.end());
 			rCode.erase(rCode.begin(), rCode.begin() + levelDiff);
 		}
 
-		lCode.push_back(root->getValue()[0]);
-		rCode.insert(rCode.begin(), root->getValue()[1]);
+		int val1 = std::get<0>(node->getValue());
+		int val2 = std::get<1>(node->getValue());
 
-		if (root->isLeaf() || _mps != -1) {
+		lCode.push_back(val1);
+		rCode.insert(rCode.begin(), val2);
+
+		if (node->isLeaf() || _mps != EMPTY) {
 			std::vector<int> newSignal = lCode;
 			newSignal.insert(newSignal.end(), rCode.begin(), rCode.end());
 
 			std::vector<int> newAcf = MathUtils::calcACF(newSignal);
 			int newMps = MathUtils::calcMPS(newAcf);
 
-			if (!root->isLeaf() && newMps > _mps) {
+			if (!node->isLeaf() && newMps > _mps) {
 				return;
 			}
 
-			if (root->isLeaf()) {
+			if (node->isLeaf()) {
 				if (_isOdd()) {
 					int mid = _length / 2;
 					newSignal.insert(newSignal.begin() + mid, -1);
@@ -87,16 +92,10 @@ void OptimalSignal::_create(Node* root, std::vector<int>& lCode, std::vector<int
 					_acf = newAcf;
 				}
 			}
-
-			if (root->isLeaf() && newMps < _mps || _mps == -1) {
-				_mps = newMps;
-				_signal = newSignal;
-				_acf = newAcf;
-			}
 		}
 	}
 
-	for (Node* child : root->getChildren()) {
+	for (Node* child : node->getChildren()) {
 		_create(child, lCode, rCode);
 	}
 }
