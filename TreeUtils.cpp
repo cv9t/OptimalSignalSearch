@@ -2,20 +2,14 @@
 
 void TreeUtils::_printTree(std::ostream& os, Node* node, int depth)
 {
-	if (node == nullptr) {
-		return;
-	}
+	if (node == nullptr) return;
 
 	for (int i = 0; i < depth; i += 1) {
 		os << "\t";
 	}
 
-	if (node->isRoot()) {
-		os << "root - " << *node << std::endl;
-	}
-	else {
-		os << node->getLevel() << " - " << *node << std::endl;
-	}
+	if (node->isRoot()) os << "root - " << *node << std::endl;
+	else os << node->getLevel() << " - " << *node << std::endl;
 
 	for (Node* child : node->getChildren()) {
 		_printTree(os, child, depth + 1);

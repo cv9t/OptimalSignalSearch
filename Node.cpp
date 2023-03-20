@@ -1,11 +1,11 @@
 ﻿#include "Node.h"
 
-Node::Node(const std::tuple<int, int> value)
+Node::Node(const std::pair<int, int> value)
 {
 	_value = value;
 }
 
-Node::Node(const std::tuple<int, int> value, Node* parent) : Node(value)
+Node::Node(const std::pair<int, int> value, Node* parent) : Node(value)
 {
 	_parent = parent;
 }
@@ -17,9 +17,7 @@ Node::~Node()
 
 int Node::_getLevel(const Node* node, int level) const
 {
-	if (node->_parent == nullptr) {
-		return level;
-	}
+	if (node->_parent == nullptr) return level;
 	return _getLevel(node->_parent, level + 1);
 }
 
@@ -38,7 +36,7 @@ bool Node::isLeaf() const
 	return _children.empty();
 }
 
-std::tuple<int, int> Node::getValue() const
+std::pair<int, int> Node::getValue() const
 {
 	return _value;
 }
@@ -68,11 +66,7 @@ void Node::addChild(Node* node)
 
 std::ostream& operator<<(std::ostream& os, Node& node)
 {
-	if (node.isRoot()) {
-		os << "*";
-	}
-	else {
-		os << std::get<0>(node._value) << std::get<1>(node._value);
-	}
+	if (node.isRoot()) os << "*";
+	else os << node._value.first << node._value.second;
 	return os;
 }

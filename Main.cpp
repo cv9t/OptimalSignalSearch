@@ -1,11 +1,12 @@
 #include <iostream>
 #include "OptimalSignal.h"
+#include "MathUtils.h"
 
 int main()
 {
-	OptimalSignal* signal = new OptimalSignal(6);
+	OptimalSignal* signal = new OptimalSignal(13);
 
-	std::cout << *signal << std::endl;
+	std::cout << *signal;
 
 	return 0;
 }
