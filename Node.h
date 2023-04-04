@@ -35,6 +35,8 @@ public:
 
 	void addChild(Node* node);
 
+	void setParent(Node* parent);
+
 	friend std::ostream& operator<<(std::ostream& os, Node& tree);
 };
 

@@ -61,7 +61,13 @@ Node* Node::getParent() const
 
 void Node::addChild(Node* node)
 {
+	node->setParent(this);
 	_children.push_back(node);
+}
+
+void Node::setParent(Node* parent)
+{
+	_parent = parent;
 }
 
 std::ostream& operator<<(std::ostream& os, Node& node)

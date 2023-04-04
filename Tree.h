@@ -12,8 +12,6 @@ private:
 
 	void _create();
 
-	void _create(Node* node, int depth);
-
 public:
 	Tree(int depth);
 	~Tree();

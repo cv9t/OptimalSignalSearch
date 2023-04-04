@@ -10,13 +10,13 @@ class OptimalSignal
 private:
 	Tree* _tree;
 	std::vector<int> _signal, _acf;
-	int _length, _mps, _mpsCount;
+	int _length, _mps, _mpsOffset;
 
 	bool _isOdd();
 
 	void _create();
 
-	void _create(Node* root, std::vector<int> lCode, std::vector<int> rCode);
+	void _create(Node* root, std::vector<int>& lCode, std::vector<int>& rCode, bool mpsFound = false);
 
 public:
 	OptimalSignal(int length);

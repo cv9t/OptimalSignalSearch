@@ -1,5 +1,6 @@
 ﻿#include "Tree.h"
 #include "TreeUtils.h"
+#include <queue>
 #include <utility>
 
 Tree::Tree(int depth)
@@ -18,24 +19,24 @@ Tree::~Tree()
 
 void Tree::_create()
 {
-	_create(_root, _depth);
+
 }
 
-void Tree::_create(Node* parent, int depth)
-{
-	std::vector<std::pair<int, int>> values{ { -1, -1 }, { -1, 1 }, { 1, -1 }, { 1, 1 } };
-
-	for (int i = 0; i < values.size(); i += 1) {
-		Node* child = new Node(values[i], parent);
-		parent->addChild(child);
-	}
-
-	if (depth > 1) {
-		for (int i = 0; i < values.size(); i += 1) {
-			_create(parent->getChild(i), depth - 1);
-		}
-	}
-}
+//void Tree::_create(Node* parent, int depth)
+//{
+//	std::vector<std::pair<int, int>> values{ { -1, -1 }, { -1, 1 }, { 1, -1 }, { 1, 1 } };
+//
+//	for (int i = 0; i < values.size(); i += 1) {
+//		Node* child = new Node(values[i], parent);
+//		parent->addChild(child);
+//	}
+//
+//	if (depth > 1) {
+//		for (int i = 0; i < values.size(); i += 1) {
+//			_create(parent->getChild(i), depth - 1);
+//		}
+//	}
+//}
 
 Node* Tree::getRoot()
 {

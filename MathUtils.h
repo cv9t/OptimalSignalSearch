@@ -9,7 +9,7 @@ class MathUtils
 public:
 	static std::vector<int> calcACF(const std::vector<int>& signal);
 
-	static std::pair<int, int> countMPS(const std::vector<int>& acf);
+	static std::pair<int, int> calcMPS(const std::vector<int>& acf);
 };
 
 #endif

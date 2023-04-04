@@ -3,7 +3,7 @@
 #include <queue>
 #include <algorithm>
 
-int EMPTY = -1;
+#include <iostream>
 
 OptimalSignal::OptimalSignal(int length)
 {
@@ -13,10 +13,9 @@ OptimalSignal::OptimalSignal(int length)
 	_tree = new Tree(length / 2);
 	_length = length;
 
-	_mps = EMPTY;
-	_mpsCount = EMPTY;
+	// std::cout << *_tree;
 
-	_create();
+	// _create();
 }
 
 OptimalSignal::~OptimalSignal()
@@ -33,10 +32,11 @@ bool OptimalSignal::_isOdd()
 
 void OptimalSignal::_create()
 {
-	_create(_tree->getRoot(), {}, {});
+	std::vector<int> lCode, rCode;
+	_create(_tree->getRoot(), lCode, rCode);
 }
 
-void OptimalSignal::_create(Node* node, std::vector<int> lCode, std::vector<int> rCode)
+void OptimalSignal::_create(Node* node, std::vector<int>& lCode, std::vector<int>& rCode, bool mpsFound)
 {
 	if (node == nullptr) return;
 
@@ -53,65 +53,68 @@ void OptimalSignal::_create(Node* node, std::vector<int> lCode, std::vector<int>
 		lCode.push_back(val1);
 		rCode.insert(rCode.begin(), val2);
 
-		// if (node->isLeaf() || _mps != EMPTY) {
 		if (node->isLeaf()) {
 			std::vector<int> newSignal = lCode;
 			newSignal.insert(newSignal.end(), rCode.begin(), rCode.end());
 
 			std::vector<int> newAcf = MathUtils::calcACF(newSignal);
-			std::pair<int, int> temp = MathUtils::countMPS(newAcf);
+			/* std::pair<int, int> mpsData = MathUtils::calcMPS(newAcf);
 
-			int newMps = temp.first;
-			int newMpsCount = temp.second;
-
-			// TODO:
-			// Доделать условия для выброса ненужных веток
-
-			//if (!node->isLeaf() && (newMps > _mps || (newMps == _mps && newMpsCount > _mpsCount))) {
-			//	return;
-			//}
+			int newMps = mpsData.first;
+			int newMpsOffset = mpsData.second;
 
 			if (_isOdd()) {
 				int mid = _length / 2;
 				newSignal.insert(newSignal.begin() + mid, -1);
 
 				std::vector<int> acf_0 = MathUtils::calcACF(newSignal);
-				temp = MathUtils::countMPS(acf_0);
+				mpsData = MathUtils::calcMPS(acf_0);
 
-				int mps_0 = temp.first;
-				int mpsCount_0 = temp.second;
+				int mps_0 = mpsData.first;
+				int mpsOffset_0 = mpsData.second;
 
 				newSignal[mid] = 1;
 
 				std::vector<int> acf_1 = MathUtils::calcACF(newSignal);
-				temp = MathUtils::countMPS(acf_1);
+				mpsData = MathUtils::calcMPS(acf_1);
 
-				int mps_1 = temp.first;
-				int mpsCount_1 = temp.second;
+				int mps_1 = mpsData.first;
+				int mpsOffset_1 = mpsData.second;
 
-				if (mps_0 < mps_1 || (mps_0 == mps_1 && mpsCount_0 > mpsCount_1)) {
+				if (mps_0 < mps_1 || (mps_0 == mps_1 && mpsOffset_0 > mpsOffset_1)) {
 					newMps = mps_0;
 					newAcf = acf_0;
-					newMpsCount = mpsCount_0;
+					newMpsOffset = mpsOffset_0;
 				}
 				else {
 					newMps = mps_1;
 					newAcf = acf_1;
-					newMpsCount = mpsCount_1;
+					newMpsOffset = mpsOffset_1;
 				}
-			}
+			}*/
 
-			if (_mps == EMPTY || newMps < _mps || (newMps == _mps && newMpsCount > _mpsCount)) {
+			//for (int i = 0; i < newSignal.size(); i += 1) {
+			//	std::cout << newSignal[i] << " ";
+			//}
+			//std::cout << "  ";
+
+			for (int i = 0; i < newAcf.size(); i += 1) {
+				std::cout << newAcf[i];
+			}
+			std::cout << std::endl;
+
+			/*if (newMps != 0 && (!mpsFound || newMps < _mps || (newMps == _mps && newMpsOffset > _mpsOffset))) {
+				mpsFound = true;
 				_mps = newMps;
-				_mpsCount = newMpsCount;
+				_mpsOffset = newMpsOffset;
 				_signal = newSignal;
 				_acf = newAcf;
-			}
+			}*/
 		}
 	}
 
 	for (Node* child : node->getChildren()) {
-		_create(child, lCode, rCode);
+		_create(child, lCode, rCode, mpsFound);
 	}
 }
 
@@ -131,7 +134,7 @@ std::ostream& operator<<(std::ostream& os, OptimalSignal& signal)
 
 	os << "mps: " << signal._mps << std::endl;
 
-	os << "mpsCount: " << signal._mpsCount << std::endl;
+	os << "mpsOffset: " << signal._mpsOffset << std::endl;
 
 	return os;
 }
