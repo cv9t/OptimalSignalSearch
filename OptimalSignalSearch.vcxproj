@@ -128,18 +128,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Node.cpp" />
-    <ClCompile Include="OptimalSignal.cpp" />
-    <ClCompile Include="Tree.cpp" />
-    <ClCompile Include="MathUtils.cpp" />
-    <ClCompile Include="TreeUtils.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Node.h" />
-    <ClInclude Include="OptimalSignal.h" />
-    <ClInclude Include="Tree.h" />
-    <ClInclude Include="MathUtils.h" />
-    <ClInclude Include="TreeUtils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
