@@ -23,7 +23,7 @@ void printVector(const vector<T>& vec)
 {
 	int n = vec.size();
 	for (int i = 0; i < n; i += 1) {
-		cout << vec[i];
+		cout << vec[i] << " ";
 	}
 	cout << endl;
 }
@@ -97,21 +97,34 @@ AcfProps getAcfProps(vector<int>& acf)
 {
 	int n = acf.size();
 	AcfProps acf_props{ -1, -1 };
-	for (int i = 1; i < n; i += 1) {
+	int abs_acf_w = -1;
+	int acf_w = -1;
+
+	for (int i = 1; i < n - 1; i += 1) {
 		int curr = acf[i];
-		if (acf_props.mlw == -1 && curr <= 0) {
-			acf_props.mlw = curr == 0 && i == 1 ? i : 2 * i;
+		if (acf_w == -1 && curr <= 0) {
+			acf_w = i;
 		}
 
-		if (i < n - 1) {
-			curr = abs(curr);
-			int prev = abs(acf[i - 1]);
-			int next = abs(acf[i + 1]);
-			if (curr > prev && curr > next && curr > acf_props.mps) {
-				acf_props.mps = curr;
-			}
+		curr = abs(curr);
+		int next = abs(acf[i + 1]);
+		int prev = abs(acf[i - 1]);
+
+		if (abs_acf_w == -1 && curr < next) {
+			abs_acf_w = i;
+		}
+
+		if (curr > prev && curr > next && curr > acf_props.mps) {
+			acf_props.mps = curr;
 		}
 	}
+
+	(abs_acf_w > acf_w && abs_acf_w - acf_w <= 2) ? acf_props.mlw = acf_w : acf_props.mlw = abs_acf_w;
+
+	if (abs(acf[acf.size() - 2]) < abs(acf[acf.size() - 1]) && (abs(acf[acf.size() - 1]) > acf_props.mps || acf_props.mps == -1)) {
+		acf_props.mps = abs(acf[acf.size() - 1]);
+	}
+
 	return acf_props;
 }
 
@@ -262,7 +275,7 @@ private:
 	{
 		queue<Node*> q;
 		vector<vector<int>> uniq_acfs;
-		int cur_lvl = 0;
+		int curr_lvl = 0;
 		bool fst_found = false;
 
 		q.push(new Node({ 0 }, { 0 }, 0));
@@ -272,8 +285,8 @@ private:
 			Node* node = q.front();
 			q.pop();
 
-			if (cur_lvl != node->lvl) {
-				cur_lvl = node->lvl;
+			if (curr_lvl != node->lvl) {
+				curr_lvl = node->lvl;
 				uniq_acfs.clear();
 			}
 
@@ -288,7 +301,7 @@ private:
 					goto skip;
 				}
 
-				if (_max_lvl() == cur_lvl) {
+				if (_max_lvl() == curr_lvl) {
 					if (new_acf_props.mps == -1 || new_acf_props.mlw == -1) {
 						goto skip;
 					}
@@ -359,6 +372,10 @@ public:
  */
 void printOptimalSignalSearch(const OptimalSignalSearch& oss)
 {
+	if (!oss.signal.size()) {
+		cout << "signal not found" << endl;
+		return;
+	}
 	cout << "signal: [ ";
 	for (int i = 0; i < oss.signal.size(); i += 1) {
 		cout << oss.signal[i] << " ";
@@ -374,21 +391,34 @@ void printOptimalSignalSearch(const OptimalSignalSearch& oss)
 }
 
 
-int main()
+int main(int argc, char* argv[])
 {
-	auto start = chrono::high_resolution_clock::now();
+	if (argc != 3) {
+		cerr << "Invalida length of arguments" << endl;
+	}
 
-	OptimalSignalSearch* oss = new OptimalSignalSearch(5, 2, 2);
+	try {
+		int N = (int)argv[0];
+		int MAX_MLW = (int)argv[1];
+		int MAX_MPS = (int)argv[2];
 
-	auto stop = chrono::high_resolution_clock::now();
+		auto start = chrono::high_resolution_clock::now();
 
-	auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
+		OptimalSignalSearch* oss = new OptimalSignalSearch(N, MAX_MLW, MAX_MPS);
 
-	printOptimalSignalSearch(*oss);
+		auto stop = chrono::high_resolution_clock::now();
 
-	delete oss;
+		auto duration = chrono::duration_cast<chrono::milliseconds>(stop - start);
 
-	cout << "Time: " << fixed << setprecision(2) << duration.count() / 1000.0 << " sec" << endl;
+		printOptimalSignalSearch(*oss);
+
+		delete oss;
+
+		cout << "Time: " << fixed << setprecision(2) << duration.count() / 1000.0 << " sec" << endl;
+	}
+	catch (const exception& e) {
+		cerr << "Error: " << e.what() << '\n';
+	}
 
 	return 0;
 }
